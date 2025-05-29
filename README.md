@@ -48,7 +48,7 @@ This backend is organized around key modules, each owned by a specific team memb
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/dentallink.git
+git clone https://github.com/ZeinabAbdelghafar/dentallink.git
 cd dentallink
 composer install
 cp .env.example .env
