@@ -9,9 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/cart/add', [CartController::class, 'add']);
-    Route::get('/cart', [CartController::class, 'get']);
-    Route::put('/cart', [CartController::class, 'update']);
-    Route::delete('/cart', [CartController::class, 'destroy']);
-});
+Route::apiResource('cart', CartController::class);
