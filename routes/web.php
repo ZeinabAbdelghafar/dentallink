@@ -7,10 +7,3 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-Route::middleware('auth')->group(function () {
-    Route::post('/cart/add', [CartController::class, 'add']);
-    Route::get('/cart', [CartController::class, 'get']);
-    Route::put('/cart', [CartController::class, 'update']);
-    Route::delete('/cart', [CartController::class, 'destroy']);
-});
