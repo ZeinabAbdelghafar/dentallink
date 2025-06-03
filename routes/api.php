@@ -7,6 +7,8 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Middleware\RequireAuth;
 use App\Http\Middleware\CheckUser;
 use App\Http\Middleware\IsAdmin;
@@ -31,13 +33,12 @@ Route::prefix('auth')->group(function () {
     Route::post('/signup', [AuthController::class, 'signup']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/verify/{id}/{uuid}', [AuthController::class, 'verify']);
-    Route::get('/test', function () {
-        return response()->json(['message' => 'Hello, world!']);
-    });
 });
 
 Route::middleware([CheckUser::class])->group(function () {
-    Route::get('/profile', [UserController::class, 'profile']);
+    Route::get('/profile', [ProfileController::class, 'get']);
+    Route::post('/profile', [ProfileController::class, 'update']);
+    Route::delete('/profile', [ProfileController::class, 'destroy']);
 });
 
 Route::middleware([RequireAuth::class])->group(function () {
@@ -63,4 +64,25 @@ Route::middleware([RequireAuth::class])->group(function () {
         Route::put('/', [ProfileController::class, 'update']);
         Route::delete('/', [ProfileController::class, 'destroy']);
     });
+});
+
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::post('/', [ProductController::class, 'store'])->middleware(['auth:api', IsAdmin::class]);
+    Route::get('/{id}', [ProductController::class, 'show']);
+    Route::put('/{id}', [ProductController::class, 'update'])->middleware(['auth:api', IsAdmin::class]);
+    Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware(['auth:api', IsAdmin::class]);
+
+    Route::post('/{id}/rating', [ProductController::class, 'addRating'])->middleware('auth:api');
+    Route::get('/{id}/rating', [ProductController::class, 'getRating']);
+
+    Route::get('/search', [ProductController::class, 'search']);
+    Route::get('/count', [ProductController::class, 'count'])->middleware(['auth:api', IsAdmin::class]);
+});
+
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::get('/count', [CategoryController::class, 'count']);
+    Route::post('/', [CategoryController::class, 'store'])->middleware(['auth:api', IsAdmin::class]);
+    Route::get('/{id}', [CategoryController::class, 'show']);
 });

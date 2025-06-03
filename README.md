@@ -84,19 +84,3 @@ This is a team project. For new features or bug fixes, please work on your own b
 
 - **Engy** – Cart, Orders, Checkout, Wishlist, Banners  
 - **Zeinab** – Users, Profiles, Categories, Products, Ratings, Coupons
-
-
-## API Testing Overview
-
-| Endpoint               | Method | Description                | Auth Required | Sample Request Body                          | Expected Status | Notes                              |
-|------------------------|--------|----------------------------|---------------|---------------------------------------------|-----------------|----------------------------------|
-| `/auth/signup`         | POST   | User signup                | No            | `{ "email": "...", "username": "...", "password": "...", "gender": "..." }` | 200             | Returns JWT token on success     |
-| `/auth/login`          | POST   | User login                 | No            | `{ "email": "...", "password": "..." }`    | 200             | Returns JWT token                 |
-| `/auth/verify/{id}/{uuid}` | GET    | Verify email              | No            | N/A                                         | 302 (redirect)  | Use verification link from email |
-| `/profile`             | GET    | Get user profile           | Yes           | N/A                                         | 200             | Requires Bearer token            |
-| `/profile`             | PUT    | Update user profile        | Yes           | `{ "full_name": "...", "birth_date": "..." }` | 201             | Requires Bearer token            |
-| `/user/ResetPassword`  | POST   | Request password reset link| No            | `{ "email": "..." }`                         | 200             | Sends reset link email           |
-| `/user/ResetPassword/{id}/` | PUT    | Reset password           | No            | `{ "password": "..." }`                      | 200             | Reset user password              |
-| `/user`                | GET    | Get all users (admin)      | Yes           | N/A                                         | 200             | Admin only                      |
-| `/user/{id}`           | DELETE | Delete a user (admin)      | Yes           | N/A                                         | 200             | Admin only                      |
-

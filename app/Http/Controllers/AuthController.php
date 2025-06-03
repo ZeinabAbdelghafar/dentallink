@@ -58,7 +58,7 @@ class AuthController extends Controller
             'expire_at' => $expireAt,
         ]);
 
-        $verificationUrl = URL::to('/verify/' . $user->id . '/' . $uniqueString);
+        $verificationUrl = URL::to(path: '/api/auth/verify/' . $user->id . '/' . $uniqueString);
 
         Mail::to($user->email)->send(new VerificationEmail(
             $user,
