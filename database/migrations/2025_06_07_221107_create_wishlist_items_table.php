@@ -14,13 +14,12 @@ return new class extends Migration
         Schema::create('wishlist_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('wishlist_id')->constrained()->onDelete('cascade');
-            // $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->unsignedBigInteger('productId');
+            $table->foreignId('productId')->constrained('products')->onDelete('cascade');
             $table->string('name');
             $table->decimal('price', 10, 2);
             $table->json('img')->nullable();
             $table->integer('stock');
-            // $table->timestamps(); 
+            $table->timestamps();
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('wishlist_items');
     }
 };

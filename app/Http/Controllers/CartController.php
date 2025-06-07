@@ -43,7 +43,7 @@ class CartController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $productId = $request->input('product_id');
+        $productId = $request->input('productId');
         $qty = (int) $request->input('qty');
 
         if (!$productId || $qty <= 0) {
@@ -61,7 +61,7 @@ class CartController extends Controller
 
         $cart = Cart::firstOrCreate(['email' => $user->email]);
 
-        $cartItem = $cart->items()->where('product_id', $productId)->first();
+        $cartItem = $cart->items()->where('productId', $productId)->first();
 
         if ($cartItem) {
             $newQty = $cartItem->qty + $qty;
@@ -75,7 +75,7 @@ class CartController extends Controller
             $cartItem->save();
         } else {
             $cart->items()->create([
-                'product_id' => $product->id,
+                'productId' => $product->id,
                 'name' => $product->title,
                 'price' => $product->price,
                 'qty' => $qty,
@@ -104,7 +104,7 @@ class CartController extends Controller
             return response()->json(['error' => 'Cart not found'], 404);
         }
 
-        $item = $cart->items()->where('product_id', $productId)->first();
+        $item = $cart->items()->where('productId', $productId)->first();
 
         if (!$item) {
             return response()->json(['error' => 'Item not found in cart'], 404);
@@ -133,7 +133,7 @@ class CartController extends Controller
             return response()->json(['error' => 'Cart not found'], 404);
         }
 
-        $item = $cart->items()->where('product_id', $productId)->first();
+        $item = $cart->items()->where('productId', $productId)->first();
 
         if (!$item) {
             return response()->json(['error' => 'Item not found in cart'], 404);
@@ -159,15 +159,24 @@ class CartController extends Controller
      */
     public function destroy(string $productId)
     {
-        $cart = Cart::where('email', auth()->user()->email)->first();
+        $cart = Cart::where('email', Auth::user()->email)->first();
 
         if (!$cart) {
             return response()->json(['error' => 'Cart not found'], 404);
         }
 
-        $cart->items()->where('product_id', $productId)->delete();
+        $item = $cart->items()->where('productId', $productId)->first();
+
+        if (!$item) {
+            return response()->json(['error' => 'Item not found in cart'], 404);
+        }
+
+        $item->delete();
         $cart->refresh();
 
-        return response()->json($cart->items);
+        return response()->json([
+            'message' => 'Item removed from cart',
+            'items' => $cart->items
+        ]);
     }
 }

@@ -27,20 +27,27 @@ class WishlistController extends Controller
     {
         $user = $request->user();
         $email = $user->email;
-        $productId = $request->input('product_id');
+        if (!$email) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
+        $productId = $request->input('productId');
+
+        // dd($productId);
         if (!$productId) {
-            return response()->json(['error' => 'Invalid request'], 400);
+            return response()->json(['error' => 'Product ID is required'], 400);
         }
 
         $product = Product::find($productId);
+        // dd($product);
         if (!$product) {
             return response()->json(['error' => 'Invalid Product ID'], 404);
         }
 
         $wishlist = Wishlist::firstOrCreate(['email' => $email]);
 
-        $existingItem = $wishlist->items()->where('product_id', $productId)->first();
+        $existingItem = $wishlist->items()->where('productId', $productId)->first();
+        // dd($existingItem);
 
         if ($existingItem) {
             $existingItem->delete();
@@ -49,13 +56,15 @@ class WishlistController extends Controller
                 'wishlist' => $wishlist->items()->get()
             ]);
         } else {
+            // dd($product->id);
             $wishlist->items()->create([
-                'product_id' => $product->id,
+                'productId' => $product->id ,
                 'name' => $product->title,
                 'price' => $product->price,
-                'img' => $product->image,
+                'img' => $product->image ?? null,
                 'stock' => $product->stock,
             ]);
+            // dd($wishlist->items()->get());
             return response()->json([
                 'message' => 'Added to favorites',
                 'wishlist' => $wishlist->items()->get()
@@ -67,7 +76,7 @@ class WishlistController extends Controller
     {
         $user = $request->user();
         $email = $user->email;
-        $productId = $request->input('product_id');
+        $productId = $request->input('productId');
 
         if (!$productId) {
             return response()->json(['error' => 'Invalid request'], 400);
@@ -80,11 +89,11 @@ class WishlistController extends Controller
 
         $wishlist = Wishlist::firstOrCreate(['email' => $email]);
 
-        $exists = $wishlist->items()->where('product_id', $productId)->exists();
+        $exists = $wishlist->items()->where('productId', $productId)->exists();
 
         if (!$exists) {
             $wishlist->items()->create([
-                'product_id' => $product->id,
+                'productId' => $product->id,
                 'name' => $product->title,
                 'price' => $product->price,
                 'img' => $product->image,
@@ -105,7 +114,7 @@ class WishlistController extends Controller
             return response()->json(['error' => 'Wishlist not found'], 404);
         }
 
-        $item = $wishlist->items()->where('product_id', $productId)->first();
+        $item = $wishlist->items()->where('productId', $productId)->first();
 
         if (!$item) {
             return response()->json(['error' => 'Item not found in wishlist'], 404);

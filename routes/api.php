@@ -19,9 +19,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::middleware('auth:sanctum')->apiResource('cart', CartController::class);
+Route::middleware([RequireAuth::class])->apiResource('cart', CartController::class);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware([RequireAuth::class])->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggleFavorite']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
@@ -44,21 +44,21 @@ Route::middleware([CheckUser::class])->group(function () {
 Route::middleware([RequireAuth::class])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/count', [UserController::class, 'countUsers']);
-        
+
         Route::middleware([IsAdmin::class])->group(function () {
             Route::get('/', [UserController::class, 'getUsers']);
             Route::delete('/{id}', [UserController::class, 'deleteUser']);
         });
-        
+
         Route::middleware([IsOwner::class])->group(function () {
             Route::get('/{id}', [UserController::class, 'getUser']);
         });
-        
+
         Route::post('/ResetPassword', [UserController::class, 'resetLink']);
         Route::put('/ResetPassword/{id}/', [UserController::class, 'resetLogic']);
         Route::put('/email', [UserController::class, 'emailUpdate']);
     });
-    
+
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'get']);
         Route::put('/', [ProfileController::class, 'update']);
