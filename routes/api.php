@@ -91,4 +91,4 @@ Route::prefix('categories')->group(function () {
 
 
 Route::get('/settings/home', [HomePageSettingsController::class, 'show']);
-Route::put('/settings/home', [HomePageSettingsController::class, 'update']);
+Route::post('/settings/home', [HomePageSettingsController::class, 'update']);
