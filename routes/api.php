@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HomePageSettingsController;
 use App\Http\Middleware\RequireAuth;
 use App\Http\Middleware\CheckUser;
 use App\Http\Middleware\IsAdmin;
@@ -86,3 +87,8 @@ Route::prefix('categories')->group(function () {
     Route::post('/', [CategoryController::class, 'store'])->middleware(['auth:api', IsAdmin::class]);
     Route::get('/{id}', [CategoryController::class, 'show']);
 });
+
+
+
+Route::get('/settings/home', [HomePageSettingsController::class, 'show']);
+Route::put('/settings/home', [HomePageSettingsController::class, 'update']);

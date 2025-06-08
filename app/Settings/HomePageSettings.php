@@ -12,6 +12,6 @@ class HomePageSettings extends Settings
 
     public static function group(): string
     {
-        return 'home';
+        return 'home_page';
     }
 }
