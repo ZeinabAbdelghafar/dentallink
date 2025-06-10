@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomePageSettingsController;
 use App\Http\Middleware\RequireAuth;
@@ -92,3 +93,11 @@ Route::prefix('categories')->group(function () {
 
 Route::get('/settings/home', [HomePageSettingsController::class, 'show']);
 Route::post('/settings/home', [HomePageSettingsController::class, 'update']);
+
+
+// https:------/api/payment/webhook  --> Fawaterk webhook URL
+Route::prefix('payment')->group(function () {
+    Route::post('/create', [PaymentController::class, 'createInvoice']);
+    Route::post('/webhook', [PaymentController::class, 'webhook']);
+    Route::get('/success', [PaymentController::class, 'success'])->name('payment.success');
+});
