@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -53,11 +54,10 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        // $data = $request->validated();
-
-        $data = $request->all();
+        \Log::info('Store method hit'); 
+        $data = $request->validated();
 
         // Handle image uploads
         $images = [];
