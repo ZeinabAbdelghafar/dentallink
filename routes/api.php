@@ -8,7 +8,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HomePageSettingsController;
 use App\Http\Middleware\RequireAuth;
 use App\Http\Middleware\CheckUser;
 use App\Http\Middleware\IsAdmin;
@@ -19,9 +21,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::middleware('auth:sanctum')->apiResource('cart', CartController::class);
+Route::middleware([RequireAuth::class])->apiResource('cart', CartController::class);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware([RequireAuth::class])->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggleFavorite']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
@@ -44,21 +46,21 @@ Route::middleware([CheckUser::class])->group(function () {
 Route::middleware([RequireAuth::class])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/count', [UserController::class, 'countUsers']);
-        
+
         Route::middleware([IsAdmin::class])->group(function () {
             Route::get('/', [UserController::class, 'getUsers']);
             Route::delete('/{id}', [UserController::class, 'deleteUser']);
         });
-        
+
         Route::middleware([IsOwner::class])->group(function () {
             Route::get('/{id}', [UserController::class, 'getUser']);
         });
-        
+
         Route::post('/ResetPassword', [UserController::class, 'resetLink']);
         Route::put('/ResetPassword/{id}/', [UserController::class, 'resetLogic']);
         Route::put('/email', [UserController::class, 'emailUpdate']);
     });
-    
+
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'get']);
         Route::put('/', [ProfileController::class, 'update']);
@@ -85,4 +87,17 @@ Route::prefix('categories')->group(function () {
     Route::get('/count', [CategoryController::class, 'count']);
     Route::post('/', [CategoryController::class, 'store'])->middleware(['auth:api', IsAdmin::class]);
     Route::get('/{id}', [CategoryController::class, 'show']);
+});
+
+
+
+Route::get('/settings/home', [HomePageSettingsController::class, 'show']);
+Route::post('/settings/home', [HomePageSettingsController::class, 'update']);
+
+
+// https:------/api/payment/webhook  --> Fawaterk webhook URL
+Route::prefix('payment')->group(function () {
+    Route::post('/create', [PaymentController::class, 'createInvoice']);
+    Route::post('/webhook', [PaymentController::class, 'webhook']);
+    Route::get('/success', [PaymentController::class, 'success'])->name('payment.success');
 });

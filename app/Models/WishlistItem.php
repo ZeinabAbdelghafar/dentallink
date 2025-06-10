@@ -8,7 +8,7 @@ class WishlistItem extends Model
 {
     protected $fillable = [
         'wishlist_id',
-        'product_id',
+        'productId',
         'name',
         'price',
         'img',
