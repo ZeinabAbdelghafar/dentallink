@@ -1,7 +1,7 @@
 @component('mail::message')
-# {{ $text }}
+# {{ $subject ?? 'Email Verification' }}
 
-Hello {{ $user->username }},
+Dear {{ $user->username }},
 
 {{ $text }}
 
@@ -9,6 +9,8 @@ Hello {{ $user->username }},
 Verify Email
 @endcomponent
 
-Thanks,<br>
+If you did not create an account or request this verification, please disregard this email.
+
+Best regards,  
 {{ config('app.name') }}
 @endcomponent

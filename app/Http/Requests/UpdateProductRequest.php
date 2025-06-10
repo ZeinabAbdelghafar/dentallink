@@ -18,6 +18,7 @@ class UpdateProductRequest extends FormRequest
             'description' => 'sometimes|string|min:10',
             'price' => 'sometimes|numeric|min:0',
             'category_id' => 'sometimes|exists:categories,id',
+            'images' => 'sometimes|array',  
             'images.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'stock' => 'sometimes|integer|min:0',
         ];
