@@ -53,9 +53,11 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
+        // $data = $request->validated();
+
+        $data = $request->all();
 
         // Handle image uploads
         $images = [];
@@ -127,7 +129,7 @@ class ProductController extends Controller
         $userId = $request->user_id;
 
         // Check if user already rated this product
-        if (isset($product->ratings['user_'.$userId])) {
+        if (isset($product->ratings['user_' . $userId])) {
             return response()->json([
                 'message' => 'You have already rated this product'
             ], 400);
@@ -137,7 +139,7 @@ class ProductController extends Controller
         $rating = $request->rating;
         $ratings = $product->ratings ?? ['1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0];
         $ratings[$rating] += 1;
-        $ratings['user_'.$userId] = $rating; // Track user's rating
+        $ratings['user_' . $userId] = $rating; // Track user's rating
 
         $product->ratings = $ratings;
         $product->calculateAverageRating();

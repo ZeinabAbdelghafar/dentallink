@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e212a9bdc86800f9652fc16183ced4e9",
+    "content-hash": "be9097858394d2374114e7740d12ad06",
     "packages": [
         {
             "name": "brick/math",
@@ -328,6 +328,69 @@
                 "source": "https://github.com/cloudinary/php-transformation-builder-sdk/tree/2.1.2"
             },
             "time": "2025-02-03T11:14:03+00:00"
+        },
+        {
+            "name": "david-maximous/fawaterak",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/david-maximous/Fawaterak.git",
+                "reference": "72a9cf1ddb5cf7119cd59cacabf3678fa1d8806c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/david-maximous/Fawaterak/zipball/72a9cf1ddb5cf7119cd59cacabf3678fa1d8806c",
+                "reference": "72a9cf1ddb5cf7119cd59cacabf3678fa1d8806c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "laravel/framework": ">=6.0",
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Fawaterak": "DavidMaximous\\Fawaterak\\Facades\\FawaterakPaymentsFacade"
+                    },
+                    "providers": [
+                        "DavidMaximous\\Fawaterak\\FawaterakServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DavidMaximous\\Fawaterak\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Maximous",
+                    "email": "info@davidmaximous.me"
+                }
+            ],
+            "description": "Laravel Payment helper for Fawaterak",
+            "keywords": [
+                "aman",
+                "basata",
+                "card",
+                "fawaterak",
+                "fawry",
+                "masary",
+                "mobile wallet",
+                "online payments"
+            ],
+            "support": {
+                "issues": "https://github.com/david-maximous/Fawaterak/issues",
+                "source": "https://github.com/david-maximous/Fawaterak/tree/v1.0.5"
+            },
+            "time": "2024-09-30T23:42:30+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

@@ -10,11 +10,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FawaterakController;
 use App\Http\Controllers\HomePageSettingsController;
+use App\Http\Controllers\orderController;
 use App\Http\Middleware\RequireAuth;
 use App\Http\Middleware\CheckUser;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsOwner;
+use App\Http\Controllers\WebhookController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -101,3 +104,16 @@ Route::prefix('payment')->group(function () {
     Route::post('/webhook', [PaymentController::class, 'webhook']);
     Route::get('/success', [PaymentController::class, 'success'])->name('payment.success');
 });
+
+Route::post('/orders', [orderController::class, 'createWithCart']);
+Route::post('/webhook/fawaterak', [WebhookController::class, 'handle']);
+Route::post('/orders/pay', [FawaterakController::class, 'pay']);
+
+
+
+Route::get('/payment-redirect/{status}', function ($status) {
+    return response()->json([
+        'message' => 'Redirected from Fawaterak',
+        'status' => $status
+    ]);
+})->name('payment-redirect');

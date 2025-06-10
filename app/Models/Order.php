@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,12 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'invoice_id',
-        'customer_name',
+        'user_id',
+        'customer_first_name',
+        'customer_last_name',
         'customer_email',
-        'customer_mobile',
-        'amount',
-        'currency',
-        'status'
+        'customer_phone',
+        'total',
+        'items',
+        'invoice_id',
+        'invoice_key',
+        'payment_method',
+        'payment_reference',
+        'paid',
+        'paid_at',
+    ];
+
+
+    protected $casts = [
+        'items' => 'array',
+        'paid' => 'boolean',
+        'paid_at' => 'datetime',
     ];
 }
