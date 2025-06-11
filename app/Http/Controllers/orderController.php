@@ -72,6 +72,7 @@ class orderController extends Controller
             'customer_phone' => $user->phone ?? '',
             'total' => $total,
             'items' => json_encode($items),
+            'payment_reference' => 'cash_on_delivery',
         ]);
 
         foreach ($items as $item) {
