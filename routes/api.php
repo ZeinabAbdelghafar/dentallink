@@ -106,7 +106,7 @@ Route::post('/settings/home', [HomePageSettingsController::class, 'update']);
 // });
 
 Route::post('/orders', [orderController::class, 'createWithCart']);
-Route::post('/fawaterak/webhook', [FawaterakController::class, 'handle']);
+Route::post('/fawaterak/webhook', [WebhookController::class, 'handle']);
 Route::post('/orders/pay', [FawaterakController::class, 'pay']);
 
 
