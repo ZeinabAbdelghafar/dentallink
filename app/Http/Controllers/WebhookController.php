@@ -11,7 +11,7 @@ class WebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        Log::info('Webhook received:', $request->all());
+        Log::info('Webhook received:', $request);
 
         $verifier = new FawaterakVerify();
         $result = $verifier->verifyCallback($request);

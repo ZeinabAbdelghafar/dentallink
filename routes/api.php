@@ -98,22 +98,22 @@ Route::get('/settings/home', [HomePageSettingsController::class, 'show']);
 Route::post('/settings/home', [HomePageSettingsController::class, 'update']);
 
 
-// https:------/api/payment/webhook  --> Fawaterk webhook URL
-Route::prefix('payment')->group(function () {
-    Route::post('/create', [PaymentController::class, 'createInvoice']);
-    Route::post('/webhook', [PaymentController::class, 'webhook']);
-    Route::get('/success', [PaymentController::class, 'success'])->name('payment.success');
-});
+// https://2ae2-41-47-78-82.ngrok-free.app/api/payment/webhook  --> Fawaterk webhook URL
+// Route::prefix('payment')->group(function () {
+//     Route::post('/create', [PaymentController::class, 'createInvoice']);
+//     Route::post('/webhook', [PaymentController::class, 'webhook']);
+//     Route::get('/success', [PaymentController::class, 'success'])->name('payment.success');
+// });
 
 Route::post('/orders', [orderController::class, 'createWithCart']);
-Route::post('/webhook/fawaterak', [WebhookController::class, 'handle']);
+Route::post('/fawaterak/webhook', [FawaterakController::class, 'handle']);
 Route::post('/orders/pay', [FawaterakController::class, 'pay']);
 
 
 
-Route::get('/payment-redirect/{status}', function ($status) {
-    return response()->json([
-        'message' => 'Redirected from Fawaterak',
-        'status' => $status
-    ]);
-})->name('payment-redirect');
+// Route::get('/payment-redirect/{status}', function ($status) {
+//     return response()->json([
+//         'message' => 'Redirected from Fawaterak',
+//         'status' => $status
+//     ]);
+// })->name('payment-redirect');

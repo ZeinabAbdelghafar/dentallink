@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class FawaterakController extends Controller
 {
- 
+
     public function pay(Request $request)
     {
         $validated = $request->validate([
@@ -20,7 +20,6 @@ class FawaterakController extends Controller
             'last_name' => 'required|string',
             'email' => 'required|email',
             'phone' => 'required|string',
-            'total' => 'required|numeric|min:0.01',
             'payment_method_id' => 'required|string',
         ]);
 
@@ -37,6 +36,11 @@ class FawaterakController extends Controller
             'qty' => $item->qty,
         ])->toArray();
 
+        $total = collect($items)->reduce(function ($sum, $item) {
+            return $sum + ($item['price'] * $item['qty']);
+        }, 0);
+
+
         DB::beginTransaction();
 
         try {
@@ -45,7 +49,7 @@ class FawaterakController extends Controller
                 'customer_last_name' => $validated['last_name'],
                 'customer_email' => $validated['email'],
                 'customer_phone' => $validated['phone'],
-                'total' => $validated['total'],
+                'total' => $total,
                 'items' => json_encode($items),
             ]);
 
