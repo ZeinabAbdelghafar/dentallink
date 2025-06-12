@@ -105,9 +105,15 @@ Route::post('/settings/home', [HomePageSettingsController::class, 'update']);
 //     Route::get('/success', [PaymentController::class, 'success'])->name('payment.success');
 // });
 
-Route::middleware([RequireAuth::class])->post('/orders', [orderController::class, 'createWithCart']);
+Route::prefix('orders')->middleware([RequireAuth::class])->group(function () {
+    Route::post('/', [orderController::class, 'createWithCart']);
+    Route::get('/', [orderController::class, 'getOrders']);
+    Route::get('/{id}', [orderController::class, 'getOrderDetails']);
+    Route::post('/pay', [FawaterakController::class, 'pay']);
+});
+
 Route::post('/fawaterak/webhook', [WebhookController::class, 'handle']);
-Route::middleware([RequireAuth::class])->post('/orders/pay', [FawaterakController::class, 'pay']);
+// Route::middleware([RequireAuth::class])->post('/orders/pay', [FawaterakController::class, 'pay']);
 
 
 

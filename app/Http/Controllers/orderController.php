@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,15 +38,16 @@ class orderController extends Controller
     }
 
 
-    
+
     // cash on delivery
     public function createWithCart(Request $request)
     {
-        $validated = $request->validate([
-            'email' => 'required|email',
-        ]);
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
-        $cart = \App\Models\Cart::where('email', $validated['email'])->first();
+        $cart = Cart::where('email', $user->email)->first();
 
         if (!$cart || $cart->items->isEmpty()) {
             return response()->json(['error' => 'Cart not found or empty.'], 404);
@@ -62,8 +66,6 @@ class orderController extends Controller
             return $sum + ($item['price'] * $item['qty']);
         }, 0);
 
-        $user = \App\Models\User::where('email', $cart->email)->first();
-
         $order = Order::create([
             'user_id' => $user ? $user->id : null,
             'customer_first_name' => $user->username ?? '',
@@ -76,7 +78,7 @@ class orderController extends Controller
         ]);
 
         foreach ($items as $item) {
-            $product = \App\Models\Product::find($item['id']);
+            $product = Product::find($item['id']);
             $product->stock -= $item['qty'];
             $product->save();
         }
@@ -88,5 +90,31 @@ class orderController extends Controller
             'order_id' => $order->id,
             'total' => $total
         ]);
+    }
+
+    public function getOrders(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        if ($user->role === 'admin') {
+            $orders = Order::all();
+        } else {
+            $orders = Order::where('user_id', $user->id)->get();
+        }
+
+        return response()->json($orders);
+    }
+    
+    public function getOrderDetails($orderId)
+    {
+        $order = Order::find($orderId);
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        return response()->json($order);
     }
 }
