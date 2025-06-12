@@ -8,6 +8,7 @@ use App\Models\Order;
 use DavidMaximous\Fawaterak\Classes\FawaterakPayment;
 use Illuminate\Support\Facades\Log;
 use DavidMaximous\Fawaterak\Classes\FawaterakVerify;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FawaterakController extends Controller
@@ -45,6 +46,7 @@ class FawaterakController extends Controller
 
         try {
             $order = Order::create([
+                'user_id' => Auth::id(),
                 'customer_first_name' => $validated['first_name'],
                 'customer_last_name' => $validated['last_name'],
                 'customer_email' => $validated['email'],
