@@ -12,7 +12,7 @@ class IsAdmin
         $user = $request->user();
 
         if (!$user || $user->role !== 'admin') {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized: Admin access required.'], 401);
         }
 
         return $next($request);
