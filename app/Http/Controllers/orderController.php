@@ -107,7 +107,30 @@ class orderController extends Controller
 
         return response()->json($orders);
     }
-    
+
+    public function markCashOnDeliveryPaid(Request $request, $orderId)
+    {
+        $user = Auth::user();
+        if (!$user || $user->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $order = Order::find($orderId);
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        if ($order->payment_reference !== 'cash_on_delivery') {
+            return response()->json(['error' => 'Order is not cash on delivery'], 400);
+        }
+
+        $order->paid = true;
+        $order->paid_at = now();
+        $order->save();
+
+        return response()->json(['message' => 'Order marked as paid']);
+    }
+
     public function getOrderDetails($orderId)
     {
         $order = Order::find($orderId);

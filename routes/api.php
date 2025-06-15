@@ -110,7 +110,9 @@ Route::prefix('orders')->middleware([RequireAuth::class])->group(function () {
     Route::get('/', [orderController::class, 'getOrders']);
     Route::get('/{id}', [orderController::class, 'getOrderDetails']);
     Route::post('/pay', [FawaterakController::class, 'pay']);
+    Route::post('/{orderId}/mark-cash-paid', [orderController::class, 'markCashOnDeliveryPaid'])->middleware([IsAdmin::class]);
 });
+
 
 Route::post('/fawaterak/webhook', [WebhookController::class, 'handle']);
 // Route::middleware([RequireAuth::class])->post('/orders/pay', [FawaterakController::class, 'pay']);
