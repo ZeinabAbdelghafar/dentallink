@@ -111,8 +111,11 @@ class orderController extends Controller
     public function markCashOnDeliveryPaid(Request $request, $orderId)
     {
         $user = Auth::user();
-        if (!$user || $user->role !== 'admin') {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized: User not authenticated'], 401);
+        }
+        if ($user->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized: Only admin can mark cash on delivery orders as paid'], 401);
         }
 
         $order = Order::find($orderId);
