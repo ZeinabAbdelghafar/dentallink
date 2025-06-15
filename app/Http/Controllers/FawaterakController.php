@@ -8,6 +8,7 @@ use App\Models\Order;
 use DavidMaximous\Fawaterak\Classes\FawaterakPayment;
 use Illuminate\Support\Facades\Log;
 use DavidMaximous\Fawaterak\Classes\FawaterakVerify;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -90,9 +91,12 @@ class FawaterakController extends Controller
                 'payment_link' => $result['link'],
                 'invoice_id' => $result['invoice_id']
             ]);
-        } catch (\Throwable $e) {
+        } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Payment processing failed.'], 500);
+            return response()->json([
+                'error' => 'Payment processing failed.',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 

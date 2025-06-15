@@ -116,12 +116,3 @@ Route::prefix('orders')->middleware([RequireAuth::class])->group(function () {
 
 Route::post('/fawaterak/webhook', [WebhookController::class, 'handle']);
 // Route::middleware([RequireAuth::class])->post('/orders/pay', [FawaterakController::class, 'pay']);
-
-
-
-// Route::get('/payment-redirect/{status}', function ($status) {
-//     return response()->json([
-//         'message' => 'Redirected from Fawaterak',
-//         'status' => $status
-//     ]);
-// })->name('payment-redirect');
