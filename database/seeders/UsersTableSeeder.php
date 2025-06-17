@@ -15,6 +15,8 @@ class UsersTableSeeder extends Seeder
             'username' => 'testuser',
             'password' => Hash::make('password123'),
             'gender' => 'male',
+            'role' => 'admin',
+            'verified' => 1,
         ]);
     }
 }

@@ -20,6 +20,11 @@ class Order extends Model
         'payment_reference',
         'paid',
         'paid_at',
+        'address_line',
+        'city',
+        'state',
+        'postal_code',
+        'country',
     ];
 
 

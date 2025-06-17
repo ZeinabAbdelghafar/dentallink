@@ -42,7 +42,17 @@ class orderController extends Controller
     // cash on delivery
     public function createWithCart(Request $request)
     {
+        $validated = $request->validate([
+            'address_line' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'postal_code' => 'required|string',
+            'country' => 'required|string',
+            'phone' => 'required|string',
+        ]);
+
         $user = Auth::user();
+
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -71,10 +81,15 @@ class orderController extends Controller
             'customer_first_name' => $user->username ?? '',
             'customer_last_name' => $user->last_name ?? '',
             'customer_email' => $cart->email,
-            'customer_phone' => $user->phone ?? '',
+            'customer_phone' => $validated['phone'],
             'total' => $total,
             'items' => json_encode($items),
             'payment_reference' => 'cash_on_delivery',
+            'address_line' => $validated['address_line'],
+            'city' => $validated['city'],
+            'state' => $validated['state'],
+            'postal_code' => $validated['postal_code'],
+            'country' => $validated['country'],
         ]);
 
         foreach ($items as $item) {
@@ -88,7 +103,9 @@ class orderController extends Controller
 
         return response()->json([
             'order_id' => $order->id,
-            'total' => $total
+            'total' => $total,
+            'items' => $items,
+            'message' => 'Order created successfully with cash on delivery payment method.'
         ]);
     }
 
@@ -131,7 +148,7 @@ class orderController extends Controller
         $order->paid_at = now();
         $order->save();
 
-        return response()->json(['message' => 'Order marked as paid']);
+        return response()->json(['message' => 'Order marked as paid', 'order' => $order]);
     }
 
     public function getOrderDetails($orderId)

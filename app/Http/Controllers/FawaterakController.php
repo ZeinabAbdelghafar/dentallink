@@ -17,15 +17,20 @@ class FawaterakController extends Controller
 
     public function pay(Request $request)
     {
+        $user = Auth::user();
         $validated = $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'required|email',
             'phone' => 'required|string',
             'payment_method_id' => 'required|string',
+            'address_line' => 'nullable|string',
+            'city' => 'nullable|string',
+            'state' => 'nullable|string',
+            'postal_code' => 'nullable|string',
+            'country' => 'nullable|string',
         ]);
 
-        $cart = Cart::with('items')->where('email', $validated['email'])->first();
+        $cart = Cart::with('items')->where('email', $user->email)->first();
 
         if (!$cart || $cart->items->isEmpty()) {
             return response()->json(['error' => 'Cart not found or empty.'], 404);
@@ -50,10 +55,15 @@ class FawaterakController extends Controller
                 'user_id' => Auth::id(),
                 'customer_first_name' => $validated['first_name'],
                 'customer_last_name' => $validated['last_name'],
-                'customer_email' => $validated['email'],
+                'customer_email' => $user->email,
                 'customer_phone' => $validated['phone'],
                 'total' => $total,
                 'items' => json_encode($items),
+                'address_line' => $validated['address_line'] ?? null,
+                'city' => $validated['city'] ?? null,
+                'state' => $validated['state'] ?? null,
+                'postal_code' => $validated['postal_code'] ?? null,
+                'country' => $validated['country'] ?? null,
             ]);
 
             $fawaterak = new FawaterakPayment();
@@ -78,7 +88,9 @@ class FawaterakController extends Controller
             }
 
             $order->update([
-                'invoice_key' => $result['invoice_key']
+                'invoice_key' => $result['invoice_key'],
+                'invoice_id' => $result['invoice_id'],
+                'payment_method' => $validated['payment_method_id'],
             ]);
 
             $cart->items()->delete();
@@ -87,9 +99,10 @@ class FawaterakController extends Controller
             DB::commit();
 
             return response()->json([
-                'order_id' => $order->id,
+                'message' => 'Order created successfully. Please complete the payment.',
                 'payment_link' => $result['link'],
-                'invoice_id' => $result['invoice_id']
+                'order_id' => $order->id,
+                'order' => $order
             ]);
         } catch (Exception $e) {
             DB::rollBack();
