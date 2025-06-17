@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ShippingFee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,6 +77,11 @@ class orderController extends Controller
             return $sum + ($item['price'] * $item['qty']);
         }, 0);
 
+        $city = ucfirst(strtolower($validated['city']));
+        $fee = ShippingFee::where('governorate', $city)->first()?->fee;
+        $fee = $fee ?? 100;
+        $total += $fee;
+
         $order = Order::create([
             'user_id' => $user ? $user->id : null,
             'customer_first_name' => $user->username ?? '',
@@ -104,6 +110,7 @@ class orderController extends Controller
         return response()->json([
             'order_id' => $order->id,
             'total' => $total,
+            'shipping_fee' => $fee,
             'items' => $items,
             'message' => 'Order created successfully with cash on delivery payment method.'
         ]);

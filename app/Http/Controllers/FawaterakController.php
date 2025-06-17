@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\ShippingFee;
 use DavidMaximous\Fawaterak\Classes\FawaterakPayment;
 use Illuminate\Support\Facades\Log;
 use DavidMaximous\Fawaterak\Classes\FawaterakVerify;
@@ -47,6 +48,10 @@ class FawaterakController extends Controller
             return $sum + ($item['price'] * $item['qty']);
         }, 0);
 
+        $city = ucfirst(strtolower($validated['city']));
+        $fee = ShippingFee::where('governorate', $city)->first()?->fee;
+        $fee = $fee ?? 100;
+        $total += $fee;
 
         DB::beginTransaction();
 
@@ -102,6 +107,7 @@ class FawaterakController extends Controller
                 'message' => 'Order created successfully. Please complete the payment.',
                 'payment_link' => $result['link'],
                 'order_id' => $order->id,
+                'shipping_fee' => $fee,
                 'order' => $order
             ]);
         } catch (Exception $e) {
