@@ -8,6 +8,6 @@ return new class extends SettingsMigration
     {
         $this->migrator->add('home_page.home_title', '');
         $this->migrator->add('home_page.home_subtitle', '');
-        $this->migrator->add('home_page.home_banner', null);
+        $this->migrator->add('home_page.home_banner', '');
     }
 };

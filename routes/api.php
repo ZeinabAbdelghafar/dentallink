@@ -13,6 +13,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FawaterakController;
 use App\Http\Controllers\HomePageSettingsController;
 use App\Http\Controllers\orderController;
+use App\Http\Controllers\ShippingSettingController;
 use App\Http\Middleware\RequireAuth;
 use App\Http\Middleware\CheckUser;
 use App\Http\Middleware\IsAdmin;
@@ -70,6 +71,17 @@ Route::middleware([RequireAuth::class])->group(function () {
         Route::delete('/', [ProfileController::class, 'destroy']);
     });
 });
+// Route::middleware(['auth:api',  IsAdmin::class])->group(function () {
+//     Route::get('/shipping-setting', [ShippingSettingController::class, 'show']);
+//     Route::post('/shipping-setting', [ShippingSettingController::class, 'update']);
+// });
+
+Route::middleware(['auth:api',  IsAdmin::class])->group(function () {
+    Route::post('/shipping-fees', [ShippingSettingController::class, 'storeShippingFee']);
+    Route::get('/shipping-fees', [ShippingSettingController::class, 'index']);
+});
+
+Route::get('/governorates', [ShippingSettingController::class, 'getGovernorates']);
 
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
