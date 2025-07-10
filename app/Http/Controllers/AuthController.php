@@ -18,13 +18,13 @@ class AuthController extends Controller
 {
     protected function createToken($user)
     {
-        return JWTAuth::fromUser($user, [
+        return JWTAuth::claims([
             'id' => $user->id,
             'email' => $user->email,
             'role' => $user->role,
             'username' => $user->username,
             'verified' => $user->verified,
-        ]);
+        ])->fromUser($user);
     }
 
     public function signup(Request $request)
