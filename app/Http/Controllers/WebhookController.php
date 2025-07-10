@@ -14,6 +14,7 @@ class WebhookController extends Controller
     public function handle(Request $request)
     {
         try {
+            Log::info('Received webhook request:');
             Log::info('Request data:', $request->all());
             $verifier = new FawaterakVerify();
             $result = $verifier->verifyCallback($request);
@@ -39,6 +40,7 @@ class WebhookController extends Controller
             if (!$orderId) return response()->json(['error' => 'No order ID'], 400);
 
             $order = Order::find($orderId);
+            Log::info('Order retrieved:', ['order' => $order]);
             if (!$order || $order->paid) return response()->json(['message' => 'Already paid or invalid order'], 200);
 
             DB::beginTransaction();
@@ -49,13 +51,17 @@ class WebhookController extends Controller
                     'paid_at' => now(),
                     'payment_reference' => $result['payment_method']
                 ]);
+                Log::info('Order updated successfully:', ['order_id' => $order->id]);
 
                 $items = json_decode($order->items, true);
+                Log::info('Items retrieved:', ['items' => $items]);
                 foreach ($items as $item) {
                     Product::where('id', $item['id'])->decrement('stock', $item['qty']);
                 }
 
+                Log::info('Stock decremented for items in order:', ['items' => $items]);
                 DB::commit();
+                Log::info('Transaction committed successfully');
                 return response()->json(['message' => 'Order updated and stock adjusted'], 200);
             } catch (\Throwable $e) {
                 DB::rollBack();

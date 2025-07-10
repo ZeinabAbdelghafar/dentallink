@@ -52,7 +52,6 @@ class ShippingSettingController extends Controller
             'fee' => 'required|numeric',
         ]);
 
-        // Optional: Update if already exists
         ShippingFee::updateOrCreate(
             ['governorate' => $request->governorate],
             ['fee' => $request->fee]

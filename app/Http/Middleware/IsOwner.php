@@ -10,7 +10,7 @@ class IsOwner
     public function handle(Request $request, Closure $next)
     {
         if ($request->user->id != $request->route('id')) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized: You do not have permission to access this resource.'], 401);
         }
 
         return $next($request);

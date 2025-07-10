@@ -56,7 +56,10 @@ class CartController extends Controller
         }
 
         if ($product->stock < $qty) {
-            return response()->json(['error' => 'Not enough stock'], 400);
+            return response()->json([
+                'error' => 'Not enough stock',
+                'message' => "Only {$product->stock} units available in stock for '{$product->title}'"
+            ], 400);
         }
 
         $cart = Cart::firstOrCreate(['email' => $user->email]);
