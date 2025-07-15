@@ -27,19 +27,19 @@ class WishlistController extends Controller
     {
         $user = $request->user();
         $email = $user->email;
+
         if (!$email) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $productId = $request->input('productId');
 
-        // dd($productId);
         if (!$productId) {
             return response()->json(['error' => 'Product ID is required'], 400);
         }
 
         $product = Product::find($productId);
-        // dd($product);
+
         if (!$product) {
             return response()->json(['error' => 'Invalid Product ID'], 404);
         }
@@ -47,30 +47,34 @@ class WishlistController extends Controller
         $wishlist = Wishlist::firstOrCreate(['email' => $email]);
 
         $existingItem = $wishlist->items()->where('productId', $productId)->first();
-        // dd($existingItem);
-
         if ($existingItem) {
             $existingItem->delete();
             return response()->json([
                 'message' => 'Removed from favorites',
-                'wishlist' => $wishlist->items()->get()
+                'wishlist' => $wishlist->items()->with('product')->get()
             ]);
         } else {
-            // dd($product->id);
             $wishlist->items()->create([
                 'productId' => $product->id,
                 'name' => $product->title,
                 'price' => $product->price,
-                'img' => $product->image ?? null,
-                'stock' => $product->stock,
+                "img" => $product->image ?? null,
+                "stock" => $product->stock,
+
             ]);
-            // dd($wishlist->items()->get());
+
+            $message = 'Added to favorites';
+            if ($product->stock <= 0) {
+                $message .= ' (Currently out of stock. You’ll be notified when it’s back.)';
+            }
+
             return response()->json([
-                'message' => 'Added to favorites',
-                'wishlist' => $wishlist->items()->get()
+                'message' => $message,
+                'wishlist' => $wishlist->items()->with('product')->get()
             ]);
         }
     }
+
 
     public function store(Request $request)
     {
