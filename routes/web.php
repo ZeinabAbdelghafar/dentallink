@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Mail\ProductBackInStock;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 
@@ -33,3 +36,26 @@ Route::get('/payment-redirect/{status?}', function ($status = null) {
 
     return redirect()->away($invoiceUrl);
 })->name('payment-redirect');
+
+
+Route::get('/test-mail', function () {
+    $product = \App\Models\Product::first();
+    Mail::to('engya306@email.com')->send(new ProductBackInStock($product));
+    return 'Mail sent!';
+});
+
+
+Route::get('/test-stock-restock/{id}', function ($id) {
+    $product = Product::find($id);
+    if (!$product) {
+        return response()->json(['error' => 'Product not found'], 404);
+    }
+    $product->stock = 5;
+    $product->save();
+
+    return response()->json([
+        'message' => "Stock updated",
+        'product_id' => $id,
+        'new_stock' => $product->stock
+    ]);
+});

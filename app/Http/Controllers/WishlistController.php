@@ -58,7 +58,7 @@ class WishlistController extends Controller
         } else {
             // dd($product->id);
             $wishlist->items()->create([
-                'productId' => $product->id ,
+                'productId' => $product->id,
                 'name' => $product->title,
                 'price' => $product->price,
                 'img' => $product->image ?? null,
